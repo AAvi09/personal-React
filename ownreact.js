@@ -18,22 +18,39 @@ function createElement(type, props, ...children) {
     props: {
       ...props,
       children: children.map((child) =>
-        typeof child === "object" ? child : createTextelement(child)
+        typeof child === "object" ? child : createTextElement(child)
       ),
     },
   };
 }
-function createTextelement(text) {
+function createTextElement(text) {
   return {
     type: "TEXT_ELEMENT",
     props: {
-      nodevalue: text,
+      nodeValue: text,
       children: [],
     },
   };
 }
+
+function render(element, container) {
+  const dom =
+    element.type === "TEXT_ELEMENT"
+      ? document.createTextNode("")
+      : document.createElement(element.type);
+
+  const isProperty = (key) => key !== "children";
+  Object.keys(element.props)
+    .filter(isProperty)
+    .forEach((name) => (dom[name] = element.props[name]));
+
+  element.props.children.forEach((child) => render(child, dom));
+
+  container.appendChild(dom);
+}
 const KitKat = {
   createElement,
+  render,
 };
 const element = KitKat.createElement(
   "div",
@@ -42,4 +59,24 @@ const element = KitKat.createElement(
   KitKat.createElement("b")
 );
 const container = document.getElementById("root");
-ReactDOM.render(element, container);
+KitKat.render(element, container);
+
+const heading = KitKat.createElement(
+  "h1",
+  {
+    style: "color: blue; font-family: Arial;",
+    className: "main-heading",
+  },
+  "Welcome to My App"
+);
+
+KitKat.render(heading, document.getElementById("root"));
+
+// /** @jsx KitKat.createElement */
+// const border = (
+//   <div style="border: 1px solid black; padding: 10px">
+//     <h1>gotcha</h1>
+//     <h2 style="text-align:right">from KitKat</h2>
+//   </div>
+// );
+// KitKat.render(border, document.getElementById("root"));
