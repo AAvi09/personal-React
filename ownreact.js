@@ -80,3 +80,16 @@ KitKat.render(heading, document.getElementById("root"));
 //   </div>
 // );
 // KitKat.render(border, document.getElementById("root"));
+
+let nextUnitOfWork = null;
+
+function workLoop(deadline) {
+  let shouldYield = false;
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    nextUnitOfWork;
+  }
+  requestIdleCallback(workLoop);
+}
+
+requestIdleCallback(workLoop);
