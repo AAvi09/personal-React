@@ -33,21 +33,21 @@ function createTextElement(text) {
   };
 }
 
-function render(element, container) {
-  const dom =
-    element.type === "TEXT_ELEMENT"
-      ? document.createTextNode("")
-      : document.createElement(element.type);
+// function render(element, container) {
+//   const dom =
+//     element.type === "TEXT_ELEMENT"
+// ? document.createTextNode("")
+//       : document.createElement(element.type);
 
-  const isProperty = (key) => key !== "children";
-  Object.keys(element.props)
-    .filter(isProperty)
-    .forEach((name) => (dom[name] = element.props[name]));
+//   const isProperty = (key) => key !== "children";
+//   Object.keys(element.props)
+//     .filter(isProperty)
+//     .forEach((name) => (dom[name] = element.props[name]));
 
-  element.props.children.forEach((child) => render(child, dom));
+//   element.props.children.forEach((child) => render(child, dom));
 
-  container.appendChild(dom);
-}
+//   container.appendChild(dom);
+// }
 const KitKat = {
   createElement,
   render,
@@ -81,8 +81,6 @@ KitKat.render(heading, document.getElementById("root"));
 // );
 // KitKat.render(border, document.getElementById("root"));
 
-let nextUnitOfWork = null;
-
 function workLoop(deadline) {
   let shouldYield = false;
   while (nextUnitOfWork && !shouldYield) {
@@ -93,3 +91,14 @@ function workLoop(deadline) {
 }
 
 requestIdleCallback(workLoop);
+
+function render(element, container) {
+  nextUnitOfWork = {
+    dom: container,
+    props: {
+      children: [element],
+    },
+  };
+}
+
+let nextUnitOfWork = null;
