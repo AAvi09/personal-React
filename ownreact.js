@@ -92,6 +92,17 @@ function workLoop(deadline) {
 
 requestIdleCallback(workLoop);
 
+function performUnitOfWork(fiber) {
+  const isFunctionComponent = fiber.type instanceof Function;
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
+  }
+  return null;
+}
+function updateFunctionComponent(fiber) {}
+
 function render(element, container) {
   nextUnitOfWork = {
     dom: container,
